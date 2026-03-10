@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NILAI ATS PKN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #4a5568;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .subtitle i {
+            font-size: 1.3em;
+            color: #667eea;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            outline: none;
+            background: white;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input::placeholder {
+            color: #a0aec0;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            min-width: 120px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result-container {
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .result-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+        }
+
+        .result-card.tuntas {
+            border-color: #48bb78;
+            background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
+        }
+
+        .result-card.mungkin {
+            border-color: #ecc94b;
+            background: linear-gradient(135deg, #fffff0 0%, #fef3c7 100%);
+        }
+
+        .result-card.tidak-tuntas {
+            border-color: #f56565;
+            background: linear-gradient(135deg, #fff5f5 0%, #fee2e2 100%);
+        }
+
+        .result-card.not-found {
+            border-color: #a0aec0;
+            background: #edf2f7;
+        }
+
+        .score-badge {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #2d3748;
+        }
+
+        .score-badge small {
+            font-size: 0.4em;
+            color: #718096;
+            font-weight: normal;
+        }
+
+        .message {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #2d3748;
+            margin: 15px 0;
+        }
+
+        .emoji {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #e2e8f0;
+            font-size: 0.9em;
+            color: #718096;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot.tuntas { background: #48bb78; }
+        .dot.mungkin { background: #ecc94b; }
+        .dot.tidak { background: #f56565; }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #718096;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 NILAI ATS PKN</h1>
+        
+        <div class="subtitle">
+            <span>🏫</span>
+            <span>Kelas PKN - Pak Andris</span>
+            <span>📝</span>
+        </div>
+
+        <div class="input-group">
+            <label for="absen">Masukkan Nomor Absen Kamu</label>
+            <div class="input-wrapper">
+                <input type="number" id="absen" placeholder="Contoh: 1, 2, 3..." min="1" max="37">
+                <button onclick="cekNilai()">
+                    <span>Cek Nilai</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="resultContainer" class="result-container">
+            <div id="hasil" class="result-card">
+                <!-- Hasil akan ditampilkan di sini -->
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="dot tuntas"></span>
+                <span>Tuntas: <span id="tuntasCount">0</span></span>
+            </div>
+            <div class="stat-item">
+                <span class="dot mungkin"></span>
+                <span>Mungkin: <span id="mungkinCount">0</span></span>
+            </div>
+            <div class="stat-item">
+                <span class="dot tidak"></span>
+                <span>Tidak: <span id="tidakCount">0</span></span>
+            </div>
+        </div>
+
+        <footer>
+            ⚡ Hasil bisa berubah berdasarkan pengecekan tugas oleh Pak Andris
+        </footer>
+    </div>
+
+    <script>
+        const nilai = {
+            1:87.5, 2:85, 3:92.5, 4:85, 5:76.7, 6:81.7, 7:80, 8:90, 9:78.5,
+            10:87.5, 11:87.5, 12:87.5, 13:87.5, 14:85, 15:80, 16:92.5, 17:87.5,
+            18:85, 19:82.5, 20:82.5, 21:95, 22:71.7, 23:92.5, 24:80, 25:78.5,
+            26:81.7, 27:80, 28:90, 29:72.5, 30:85, 31:88.3, 32:81, 33:75,
+            34:85, 35:92.5, 36:85, 37:78.3
+        };
+
+        // Hitung statistik
+        function hitungStatistik() {
+            let tuntas = 0, mungkin = 0, tidak = 0;
+            
+            for(let absen in nilai) {
+                let skor = nilai[absen];
+                if(skor > 82) tuntas++;
+                else if(skor >= 75) mungkin++;
+                else tidak++;
+            }
+            
+            document.getElementById('tuntasCount').textContent = tuntas;
+            document.getElementById('mungkinCount').textContent = mungkin;
+            document.getElementById('tidakCount').textContent = tidak;
+        }
+
+        // Panggil saat halaman dimuat
+        hitungStatistik();
+
+        function cekNilai() {
+            let n = document.getElementById("absen").value;
+            let hasilDiv = document.getElementById("hasil");
+            let container = document.getElementById("resultContainer");
+            
+            // Validasi input
+            if (!n || n === "") {
+                tampilkanHasil({
+                    type: 'not-found',
+                    emoji: '❓',
+                    title: 'Oops!',
+                    message: 'Masukkan nomor absen terlebih dahulu'
+                });
+                return;
+            }
+
+            let skor = nilai[n];
+
+            if (!skor) {
+                tampilkanHasil({
+                    type: 'not-found',
+                    emoji: '🔍',
+                    title: 'Nomor Tidak Ditemukan',
+                    message: `Nomor absen ${n} tidak terdaftar`
+                });
+                return;
+            }
+
+            // Tentukan kategori dan tampilkan hasil
+            if (skor > 82) {
+                tampilkanHasil({
+                    type: 'tuntas',
+                    emoji: '🎉',
+                    title: 'SELAMAT!',
+                    message: 'Anda dinyatakan TUNTAS',
+                    skor: skor,
+                    detail: 'Pertahankan prestasimu!'
+                });
+            }
+            else if (skor >= 75) {
+                tampilkanHasil({
+                    type: 'mungkin',
+                    emoji: '🤔',
+                    title: 'Dalam Proses',
+                    message: 'Pak Andris sedang mengecek tugas',
+                    skor: skor,
+                    detail: 'Mungkin bisa menjadi pertimbangan untuk menuntaskan nilai'
+                });
+            }
+            else {
+                tampilkanHasil({
+                    type: 'tidak-tuntas',
+                    emoji: '💪',
+                    title: 'Belum Tuntas',
+                    message: 'Nilai anda masih perlu ditingkatkan',
+                    skor: skor,
+                    detail: 'Semangat terus!'
+                });
+            }
+        }
+
+        function tampilkanHasil(data) {
+            let hasilDiv = document.getElementById("hasil");
+            let container = document.getElementById("resultContainer");
+            
+            // Hapus semua kelas yang ada
+            hasilDiv.className = 'result-card';
+            
+            // Tambahkan kelas sesuai tipe
+            if (data.type) {
+                hasilDiv.classList.add(data.type);
+            }
+
+            // Buat konten HTML
+            let html = `
+                <div class="emoji">${data.emoji}</div>
+                <h2 style="color: #2d3748; margin-bottom: 10px;">${data.title}</h2>
+            `;
+
+            // Tambahkan skor jika ada
+            if (data.skor !== undefined) {
+                html += `
+                    <div class="score-badge">
+                        ${data.skor}<small>/100</small>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="message">
+                    <strong>${data.message}</strong><br>
+                    <span style="font-size: 0.9em; color: #4a5568;">${data.detail || ''}</span>
+                </div>
+            `;
+
+            // Tambahkan catatan khusus untuk kategori mungkin
+            if (data.type === 'mungkin') {
+                html += `
+                    <div style="margin-top: 15px; padding: 10px; background: rgba(236, 201, 75, 0.1); border-radius: 8px; font-size: 0.9em;">
+                        ⏳ Hasil final akan diumumkan setelah pengecekan tugas selesai
+                    </div>
+                `;
+            }
+
+            hasilDiv.innerHTML = html;
+            
+            // Tampilkan container dengan animasi
+            container.classList.add('show');
+            
+            // Scroll ke hasil
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Tambahkan fitur Enter
+        document.getElementById("absen").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                cekNilai();
+            }
+        });
+
+        // Animasi loading saat tombol ditekan
+        document.querySelector('button').addEventListener('click', function() {
+            let btnText = this.querySelector('span');
+            btnText.innerHTML = 'Mencari...';
+            setTimeout(() => {
+                btnText.innerHTML = 'Cek Nilai';
+            }, 500);
+        });
+
+        // Tampilkan pesan selamat datang
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                tampilkanHasil({
+                    type: 'not-found',
+                    emoji: '👋',
+                    title: 'Halo!',
+                    message: 'Masukkan nomor absen untuk melihat nilai ATS PKN',
+                    detail: 'Klik tombol "Cek Nilai" atau tekan Enter'
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>
