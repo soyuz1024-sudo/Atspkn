@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>NILAI ATS PKN</title>
+<style>
+body{
+font-family: Arial;
+text-align:center;
+margin-top:80px;
+}
+input,button{
+font-size:18px;
+padding:8px;
+}
+#hasil{
+margin-top:20px;
+font-size:20px;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>NILAI ATS PKN</h1>
+
+<p>masukkan nomor absen anda</p>
+
+<input type="number" id="absen">
+<button onclick="cekNilai()">cek nilai</button>
+
+<div id="hasil"></div>
+
+<script>
+
+const nilai = {
+1:87.5,
+2:85,
+3:92.5,
+4:85,
+5:76.7,
+6:81.7,
+7:80,
+8:90,
+9:78.5,
+10:87.5,
+11:87.5,
+12:87.5,
+13:87.5,
+14:85,
+15:80,
+16:92.5,
+17:87.5,
+18:85,
+19:82.5,
+20:82.5,
+21:95,
+22:71.7,
+23:92.5,
+24:80,
+25:78.5,
+26:81.7,
+27:80,
+28:90,
+29:72.5,
+30:85,
+31:88.3,
+32:81,
+33:75,
+34:85,
+35:92.5,
+36:85,
+37:78.3
+};
+
+function cekNilai(){
+
+let n = document.getElementById("absen").value;
+let hasil = document.getElementById("hasil");
+let skor = nilai[n];
+
+if(!skor){
+hasil.innerHTML="nomor absen tidak ditemukan";
+return;
+}
+
+if(skor > 82){
+hasil.innerHTML="Nilai anda: "+skor+"<br><br>Selamat anda tuntas";
+}
+else if(skor >= 0){
+hasil.innerHTML="Nilai anda: "+skor+"<br><br>Pak Andris lagi mengecek tugas dulu, dan *mungkin* bisa menjadi pertimbangan untuk menuntaskan nilai";
+}
+else{
+hasil.innerHTML="Nilai anda: "+skor;
+}
+
+}
+
+</script>
+
+</body>
+</html>
